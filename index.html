@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evalúa tu Idea de Negocio</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js CDN for dynamic graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* Gris muy suave */
+            color: #334155; /* Gris oscuro para texto principal */
+        }
+        .container {
+            max-width: 800px;
+        }
+        .form-block {
+            background-color: #ffffff;
+            border-radius: 1rem; /* Rounded corners */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+        }
+        input[type="text"],
+        input[type="number"],
+        textarea,
+        select {
+            border: 1px solid #cbd5e1; /* Gris claro */
+            border-radius: 0.5rem;
+            padding: 0.75rem 1rem;
+            width: 100%;
+            font-size: 1rem;
+            transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #60a5fa; /* Azul claro */
+            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.3); /* Sombra azul suave */
+        }
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+        }
+        .btn-primary {
+            background-color: #3b82f6; /* Azul vibrante */
+            color: #ffffff;
+        }
+        .btn-primary:hover {
+            background-color: #2563eb; /* Azul más oscuro */
+            transform: translateY(-1px);
+        }
+        .btn-secondary {
+            background-color: #e2e8f0; /* Gris claro */
+            color: #475569; /* Gris oscuro */
+        }
+        .btn-secondary:hover {
+            background-color: #cbd5e1; /* Gris un poco más oscuro */
+            transform: translateY(-1px);
+        }
+        .option-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 1.25rem;
+            border-radius: 0.75rem;
+            border: 1px solid #cbd5e1;
+            background-color: #f8fafc;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            font-weight: 500;
+            color: #475569;
+        }
+        .option-button.selected {
+            background-color: #dbeafe; /* Azul claro muy suave */
+            border-color: #60a5fa; /* Azul claro */
+            color: #1e40af; /* Azul oscuro */
+            box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.2);
+        }
+        .option-button:hover:not(.selected) {
+            background-color: #eff6ff; /* Azul muy claro al pasar el ratón */
+            border-color: #93c5fd;
+        }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+        .checkbox-item input[type="checkbox"] {
+            margin-right: 0.75rem;
+            width: auto; /* Override full width for checkboxes */
+        }
+        .checkbox-item input[type="number"] {
+            width: 120px; /* Fixed width for number input next to checkbox */
+            margin-left: 1rem;
+        }
+        .hidden {
+            display: none;
+        }
+        .score-display {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #3b82f6;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+        }
+        .risk-level {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+        }
+        .risk-low { color: #22c55e; } /* Green */
+        .risk-medium { color: #facc15; } /* Yellow */
+        .risk-high { color: #ef4444; } /* Red */
+
+        .product-entry {
+            border: 1px solid #e2e8f0;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            background-color: #fdfdfe;
+            position: relative;
+        }
+        .product-entry .remove-btn {
+            position: absolute;
+            top: 0.75rem;
+            right: 0.75rem;
+            background-color: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .product-entry .remove-btn:hover {
+            background-color: #dc2626;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+    <main class="flex-grow flex items-center justify-center py-12 px-4">
+        <div class="container mx-auto">
+
+            <!-- Bloque 1 – Bienvenida -->
+            <div id="block-1" class="form-block text-center">
+                <h1 class="text-4xl font-bold mb-4 text-gray-800">Evalúa tu idea de negocio en 5 pasos</h1>
+                <p class="text-lg text-gray-600 mb-8">Descubre si tiene potencial, cuánto necesitas invertir y qué mejorar.</p>
+                <button class="btn btn-primary text-xl" onclick="nextBlock()">Empezar evaluación</button>
+            </div>
+
+            <!-- Bloque 2 – Tu idea en pocas palabras -->
+            <div id="block-2" class="form-block hidden">
+                <h2 class="text-2xl font-semibold mb-6 text-gray-700">Tu idea en pocas palabras</h2>
+                <div class="mb-6">
+                    <label for="projectName" class="block text-gray-700 text-sm font-medium mb-2">Nombre del proyecto</label>
+                    <input type="text" id="projectName" name="projectName" placeholder="Ej: Café con Causa">
+                </div>
+                <div class="mb-6">
+                    <label for="problemSolved" class="block text-gray-700 text-sm font-medium mb-2">¿Qué problema resuelve?</label>
+                    <textarea id="problemSolved" name="problemSolved" rows="4" placeholder="Describe brevemente el problema que aborda tu negocio."></textarea>
+                </div>
+                <div class="mb-6">
+                    <label for="sector" class="block text-gray-700 text-sm font-medium mb-2">Sector principal</label>
+                    <select id="sector" name="sector">
+                        <option value="">Selecciona un sector</option>
+                        <option value="alimentacion">Alimentación</option>
+                        <option value="moda">Moda</option>
+                        <option value="tecnologia">Tecnología</option>
+                        <option value="servicios_personales">Servicios personales</option>
+                        <option value="educacion">Educación / Formación</option>
+                        <option value="turismo">Turismo y hostelería</option>
+                        <option value="salud">Salud y bienestar</option>
+                        <option value="otro">Otro</option>
+                    </select>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-medium mb-2">¿Qué vas a vender?</label>
+                    <div class="flex flex-wrap gap-3">
+                        <button type="button" class="option-button" data-name="sellType" data-value="productos" onclick="selectOption(this, 'sellType')">Productos</button>
+                        <button type="button" class="option-button" data-name="sellType" data-value="servicios" onclick="selectOption(this, 'sellType')">Servicios</button>
+                        <button type="button" class="option-button" data-name="sellType" data-value="ambos" onclick="selectOption(this, 'sellType')">Ambos</button>
+                    </div>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-medium mb-2">¿Dónde vas a vender?</label>
+                    <div class="flex flex-wrap gap-3">
+                        <button type="button" class="option-button" data-name="sellLocation" data-value="fisica" onclick="selectOption(this, 'sellLocation')">Tienda física</button>
+                        <button type="button" class="option-button" data-name="sellLocation" data-value="online" onclick="selectOption(this, 'sellLocation')">Online</button>
+                        <button type="button" class="option-button" data-name="sellLocation" data-value="ambas" onclick="selectOption(this, 'sellLocation')">Ambas</button>
+                        <button type="button" class="option-button" data-name="sellLocation" data-value="no_se" onclick="selectOption(this, 'sellLocation')">No lo sé aún</button>
+                    </div>
+                </div>
+                <div class="mb-6">
+                    <label for="differentiation" class="block text-gray-700 text-sm font-medium mb-2">¿Qué te hace diferente?</label>
+                    <textarea id="differentiation" name="differentiation" rows="4" placeholder="Describe tu propuesta de valor única."></textarea>
+                </div>
+                <div class="flex justify-between mt-8">
+                    <button class="btn btn-secondary" onclick="prevBlock()">Anterior</button>
+                    <button class="btn btn-primary" onclick="nextBlock()">Siguiente</button>
+                </div>
+            </div>
+
+            <!-- Bloque 3 – Estructura del negocio -->
+            <div id="block-3" class="form-block hidden">
+                <h2 class="text-2xl font-semibold mb-6 text-gray-700">Estructura del negocio</h2>
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-medium mb-2">¿Necesitarás local, almacén o taller?</label>
+                    <div class="flex flex-wrap gap-3">
+                        <button type="button" class="option-button" data-name="needsSpace" data-value="si" onclick="selectOption(this, 'needsSpace')">Sí</button>
+                        <button type="button" class="option-button" data-name="needsSpace" data-value="no" onclick="selectOption(this, 'needsSpace')">No</button>
+                    </div>
+                </div>
+                <div class="mb-6">
+                    <label for="spaceType" class="block text-gray-700 text-sm font-medium mb-2">¿Alquilarás o comprarás el espacio?</label>
+                    <select id="spaceType" name="spaceType">
+                        <option value="">Selecciona una opción</option>
+                        <option value="alquiler">Alquiler</option>
+                        <option value="compra">Compra</option>
+                        <option value="no_se">Aún no lo sé</option>
+                    </select>
+                </div>
+                <div class="mb-6">
+                    <label for="hoursPerDay" class="block text-gray-700 text-sm font-medium mb-2">¿Cuántas horas al día estará abierto el negocio?</label>
+                    <input type="number" id="hoursPerDay" name="hoursPerDay" min="0" placeholder="Ej: 8">
+                </div>
+                <div class="mb-6">
+                    <label for="daysPerWeek" class="block text-gray-700 text-sm font-medium mb-2">¿Cuántos días a la semana estará abierto?</label>
+                    <input type="number" id="daysPerWeek" name="daysPerWeek" min="0" max="7" placeholder="Ej: 5">
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-medium mb-2">¿Tendrás empleados en la primera fase?</label>
+                    <div class="flex flex-wrap gap-3">
+                        <button type="button" class="option-button" data-name="hasEmployees" data-value="si" onclick="selectOption(this, 'hasEmployees')">Sí</button>
+                        <button type="button" class="option-button" data-name="hasEmployees" data-value="no" onclick="selectOption(this, 'hasEmployees')">No</button>
+                        <button type="button" class="option-button" data-name="hasEmployees" data-value="no_se" onclick="selectOption(this, 'hasEmployees')">No lo sé aún</button>
+                    </div>
+                </div>
+                <div class="mb-6">
+                    <label for="canDelegate" class="block text-gray-700 text-sm font-medium mb-2">¿Podrás delegar las ventas u operaciones?</label>
+                    <select id="canDelegate" name="canDelegate">
+                        <option value="">Selecciona una opción</option>
+                        <option value="totalmente">Sí, totalmente</option>
+                        <option value="parcialmente">Parcialmente</option>
+                        <option value="no_yo">No, lo haré todo yo</option>
+                    </select>
+                </div>
+                <div class="flex justify-between mt-8">
+                    <button class="btn btn-secondary" onclick="prevBlock()">Anterior</button>
+                    <button class="btn btn-primary" onclick="nextBlock()">Siguiente</button>
+                </div>
+            </div>
+
+            <!-- Bloque 4 – Costes e inversión inicial -->
+            <div id="block-4" class="form-block hidden">
+                <h2 class="text-2xl font-semibold mb-6 text-gray-700">Costes e inversión inicial</h2>
+                <div class="mb-6">
+                    <label for="initialInvestment" class="block text-gray-700 text-sm font-medium mb-2">¿Qué inversión inicial estimas que necesitas?</label>
+                    <select id="initialInvestment" name="initialInvestment">
+                        <option value="">Selecciona una opción</option>
+                        <option value="menos_5k">Menos de 5.000 €</option>
+                        <option value="5k_20k">Entre 5.000 € y 20.000 €</option>
+                        <option value="mas_20k">Más de 20.000 €</option>
+                        <option value="no_se">No lo sé aún</option>
+                    </select>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-medium mb-2">¿Qué gastos iniciales tendrás?</label>
+                    <div id="initialExpensesContainer">
+                        <!-- Checkboxes and inputs for initial expenses -->
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="expLocal" name="initialExpenses" value="Alquiler o compra del local" onchange="toggleExpenseInput(this, 'expLocalAmount')">
+                            <label for="expLocal" class="text-gray-700">Alquiler o compra del local</label>
+                            <input type="number" id="expLocalAmount" name="expLocalAmount" class="hidden" placeholder="Cantidad (€)">
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="expLicencias" name="initialExpenses" value="Licencias o permisos" onchange="toggleExpenseInput(this, 'expLicenciasAmount')">
+                            <label for="expLicencias" class="text-gray-700">Licencias o permisos</label>
+                            <input type="number" id="expLicenciasAmount" name="expLicenciasAmount" class="hidden" placeholder="Cantidad (€)">
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="expReformas" name="initialExpenses" value="Reformas o adecuación" onchange="toggleExpenseInput(this, 'expReformasAmount')">
+                            <label for="expReformas" class="text-gray-700">Reformas o adecuación</label>
+                            <input type="number" id="expReformasAmount" name="expReformasAmount" class="hidden" placeholder="Cantidad (€)">
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="expEquipamiento" name="initialExpenses" value="Equipamiento informático o herramientas" onchange="toggleExpenseInput(this, 'expEquipamientoAmount')">
+                            <label for="expEquipamiento" class="text-gray-700">Equipamiento informático o herramientas</label>
+                            <input type="number" id="expEquipamientoAmount" name="expEquipamientoAmount" class="hidden" placeholder="Cantidad (€)">
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="expMobiliario" name="initialExpenses" value="Mobiliario" onchange="toggleExpenseInput(this, 'expMobiliarioAmount')">
+                            <label for="expMobiliario" class="text-gray-700">Mobiliario</label>
+                            <input type="number" id="expMobiliarioAmount" name="expMobiliarioAmount" class="hidden" placeholder="Cantidad (€)">
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="expVehiculo" name="initialExpenses" value="Vehículo o transporte" onchange="toggleExpenseInput(this, 'expVehiculoAmount')">
+                            <label for="expVehiculo" class="text-gray-700">Vehículo o transporte</label>
+                            <input type="number" id="expVehiculoAmount" name="expVehiculoAmount" class="hidden" placeholder="Cantidad (€)">
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="expPublicidad" name="initialExpenses" value="Publicidad o marketing de apertura" onchange="toggleExpenseInput(this, 'expPublicidadAmount')">
+                            <label for="expPublicidad" class="text-gray-700">Publicidad o marketing de apertura</label>
+                            <input type="number" id="expPublicidadAmount" name="expPublicidadAmount" class="hidden" placeholder="Cantidad (€)">
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="expStock" name="initialExpenses" value="Stock inicial" onchange="toggleExpenseInput(this, 'expStockAmount')">
+                            <label for="expStock" class="text-gray-700">Stock inicial</label>
+                            <input type="number" id="expStockAmount" name="expStockAmount" class="hidden" placeholder="Cantidad (€)">
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="expAsesoria" name="initialExpenses" value="Asesoría legal o gestoría" onchange="toggleExpenseInput(this, 'expAsesoriaAmount')">
+                            <label for="expAsesoria" class="text-gray-700">Asesoría legal o gestoría</label>
+                            <input type="number" id="expAsesoriaAmount" name="expAsesoriaAmount" class="hidden" placeholder="Cantidad (€)">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-medium mb-2">¿Qué gastos fijos mensuales estimas?</label>
+                    <div id="monthlyExpensesContainer">
+                        <!-- Checkboxes and inputs for monthly expenses -->
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="monthlyAlquiler" name="monthlyExpenses" value="Alquiler" onchange="toggleExpenseInput(this, 'monthlyAlquilerAmount')">
+                            <label for="monthlyAlquiler" class="text-gray-700">Alquiler</label>
+                            <input type="number" id="monthlyAlquilerAmount" name="monthlyAlquilerAmount" class="hidden" placeholder="Cantidad (€)">
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="monthlyNominas" name="monthlyExpenses" value="Nóminas" onchange="toggleExpenseInput(this, 'monthlyNominasAmount')">
+                            <label for="monthlyNominas" class="text-gray-700">Nóminas</label>
+                            <input type="number" id="monthlyNominasAmount" name="monthlyNominasAmount" class="hidden" placeholder="Cantidad (€)">
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="monthlySuministros" name="monthlyExpenses" value="Luz, agua, internet" onchange="toggleExpenseInput(this, 'monthlySuministrosAmount')">
+                            <label for="monthlySuministros" class="text-gray-700">Luz, agua, internet</label>
+                            <input type="number" id="monthlySuministrosAmount" name="monthlySuministrosAmount" class="hidden" placeholder="Cantidad (€)">
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="monthlySeguros" name="monthlyExpenses" value="Seguros" onchange="toggleExpenseInput(this, 'monthlySegurosAmount')">
+                            <label for="monthlySeguros" class="text-gray-700">Seguros</label>
+                            <input type="number" id="monthlySegurosAmount" name="monthlySegurosAmount" class="hidden" placeholder="Cantidad (€)">
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="monthlyPublicidad" name="monthlyExpenses" value="Publicidad / redes" onchange="toggleExpenseInput(this, 'monthlyPublicidadAmount')">
+                            <label for="monthlyPublicidad" class="text-gray-700">Publicidad / redes</label>
+                            <input type="number" id="monthlyPublicidadAmount" name="monthlyPublicidadAmount" class="hidden" placeholder="Cantidad (€)">
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="monthlyComisiones" name="monthlyExpenses" value="Comisiones de pago o plataformas online" onchange="toggleExpenseInput(this, 'monthlyComisionesAmount')">
+                            <label for="monthlyComisiones" class="text-gray-700">Comisiones de pago o plataformas online</label>
+                            <input type="number" id="monthlyComisionesAmount" name="monthlyComisionesAmount" class="hidden" placeholder="Cantidad (€)">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-between mt-8">
+                    <button class="btn btn-secondary" onclick="prevBlock()">Anterior</button>
+                    <button class="btn btn-primary" onclick="nextBlock()">Siguiente</button>
+                </div>
+            </div>
+
+            <!-- Bloque 5 – Ingresos esperados (Múltiples Productos/Servicios) -->
+            <div id="block-5" class="form-block hidden">
+                <h2 class="text-2xl font-semibold mb-6 text-gray-700">Ingresos esperados</h2>
+                <div id="productsServicesContainer">
+                    <!-- Product/Service entries will be added here dynamically -->
+                    <div class="product-entry">
+                        <button type="button" class="remove-btn" onclick="removeProductEntry(this)">X</button>
+                        <h4 class="text-lg font-medium mb-4 text-gray-800">Producto/Servicio 1</h4>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-medium mb-2">Nombre del Producto/Servicio</label>
+                            <input type="text" class="product-name" placeholder="Ej: Café Latte">
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-medium mb-2">Precio medio de venta (€)</label>
+                            <input type="number" class="product-avg-price" min="0" step="0.01" placeholder="Ej: 3.50">
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-medium mb-2">Coste variable por unidad (€)</label>
+                            <input type="number" class="product-variable-cost" min="0" step="0.01" placeholder="Ej: 1.00">
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-medium mb-2">Unidades esperadas a vender al mes</label>
+                            <input type="number" class="product-units-per-month" min="0" placeholder="Ej: 300">
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-secondary mt-4" onclick="addProductEntry()">Añadir otro Producto/Servicio</button>
+
+                <div class="mb-6 mt-8">
+                    <label class="block text-gray-700 text-sm font-medium mb-2">Facturación mensual estimada total (€)</label>
+                    <input type="number" id="estimatedTotalRevenue" name="estimatedTotalRevenue" min="0" step="0.01" placeholder="Calculado automáticamente" readonly>
+                    <button type="button" class="btn btn-secondary mt-2 text-sm" onclick="calculateTotalRevenue()">Calcular Facturación Total</button>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-medium mb-2">¿Has hecho alguna prueba real de ventas o cobros?</label>
+                    <div class="flex flex-wrap gap-3">
+                        <button type="button" class="option-button" data-name="salesTest" data-value="si" onclick="selectOption(this, 'salesTest')">Sí</button>
+                        <button type="button" class="option-button" data-name="salesTest" data-value="no" onclick="selectOption(this, 'salesTest')">No</button>
+                        <button type="button" class="option-button" data-name="salesTest" data-value="en_proceso" onclick="selectOption(this, 'salesTest')">En proceso</button>
+                    </div>
+                </div>
+                <div class="flex justify-between mt-8">
+                    <button class="btn btn-secondary" onclick="prevBlock()">Anterior</button>
+                    <button class="btn btn-primary" onclick="nextBlock()">Siguiente</button>
+                </div>
+            </div>
+
+            <!-- Bloque 6 – Estado del proyecto y riesgos -->
+            <div id="block-6" class="form-block hidden">
+                <h2 class="text-2xl font-semibold mb-6 text-gray-700">Estado del proyecto y riesgos</h2>
+                <div class="mb-6">
+                    <label for="projectStatus" class="block text-gray-700 text-sm font-medium mb-2">¿En qué estado está tu idea?</label>
+                    <select id="projectStatus" name="projectStatus">
+                        <option value="">Selecciona una opción</option>
+                        <option value="solo_idea">Solo una idea por ahora</option>
+                        <option value="desarrollando">Estoy desarrollándola</option>
+                        <option value="clientes_ventas">Ya tengo clientes o ventas</option>
+                    </select>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-medium mb-2">¿Qué riesgos detectas?</label>
+                    <div id="risksContainer">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="riskDemanda" name="risks" value="Falta de demanda">
+                            <label for="riskDemanda" class="text-gray-700">Falta de demanda</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="riskLegal" name="risks" value="Dificultades legales o burocráticas">
+                            <label for="riskLegal" class="text-gray-700">Dificultades legales o burocráticas</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="riskCompetencia" name="risks" value="Mucha competencia">
+                            <label for="riskCompetencia" class="text-gray-700">Mucha competencia</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="riskFinanciacion" name="risks" value="Dificultades para conseguir financiación">
+                            <label for="riskFinanciacion" class="text-gray-700">Dificultades para conseguir financiación</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="riskTiempoEquipo" name="risks" value="Falta de tiempo o equipo">
+                            <label for="riskTiempoEquipo" class="text-gray-700">Falta de tiempo o equipo</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-medium mb-2">¿Tienes financiación asegurada?</label>
+                    <div class="flex flex-wrap gap-3">
+                        <button type="button" class="option-button" data-name="fundingSecured" data-value="si" onclick="selectOption(this, 'fundingSecured')">Sí</button>
+                        <button type="button" class="option-button" data-name="fundingSecured" data-value="no" onclick="selectOption(this, 'fundingSecured')">No</button>
+                        <button type="button" class="option-button" data-name="fundingSecured" data-value="no_se" onclick="selectOption(this, 'fundingSecured')">No lo sé aún</button>
+                    </div>
+                </div>
+                <div class="flex justify-between mt-8">
+                    <button class="btn btn-secondary" onclick="prevBlock()">Anterior</button>
+                    <button class="btn btn-primary" onclick="submitForm()">Finalizar Evaluación</button>
+                </div>
+            </div>
+
+            <!-- Bloque 7 – Resultados -->
+            <div id="block-7" class="form-block hidden">
+                <h2 class="text-3xl font-bold mb-6 text-gray-800 text-center">Resultados de tu Evaluación</h2>
+
+                <!-- 1. Indicadores clave visuales -->
+                <div class="mb-8">
+                    <h3 class="text-2xl font-semibold mb-4 text-gray-700">Indicadores Clave</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="p-4 bg-blue-50 rounded-lg shadow-sm">
+                            <p class="text-sm text-gray-600">Rentabilidad Anual Estimada</p>
+                            <p id="resultProfitability" class="text-xl font-bold text-blue-700">--</p>
+                        </div>
+                        <div class="p-4 bg-green-50 rounded-lg shadow-sm">
+                            <p class="text-sm text-gray-600">Inversión Inicial Total</p>
+                            <p id="resultInitialInvestment" class="text-xl font-bold text-green-700">--</p>
+                        </div>
+                        <div class="p-4 bg-red-50 rounded-lg shadow-sm">
+                            <p class="text-sm text-gray-600">Costes Fijos Anuales</p>
+                            <p id="resultAnnualFixedCosts" class="text-xl font-bold text-red-700">--</p>
+                        </div>
+                        <div class="p-4 bg-purple-50 rounded-lg shadow-sm">
+                            <p class="text-sm text-gray-600">Volumen de Ventas (Unidades/Año)</p>
+                            <p id="resultSalesVolume" class="text-xl font-bold text-purple-700">--</p>
+                        </div>
+                        <div class="p-4 bg-yellow-50 rounded-lg shadow-sm">
+                            <p class="text-sm text-gray-600">Punto de Equilibrio (Unidades)</p>
+                            <p id="resultBreakEvenUnits" class="text-xl font-bold text-yellow-700">--</p>
+                        </div>
+                        <div class="p-4 bg-teal-50 rounded-lg shadow-sm">
+                            <p class="text-sm text-gray-600">Margen de Contribución Total (Mensual)</p>
+                            <p id="resultTotalContributionMargin" class="text-xl font-bold text-teal-700">--</p>
+                        </div>
+                        <div class="p-4 bg-gray-100 rounded-lg shadow-sm text-center">
+                            <p class="text-sm text-gray-600">Riesgo de la Idea</p>
+                            <p id="resultRisk" class="risk-level">--</p>
+                        </div>
+                        <div class="p-4 bg-gray-100 rounded-lg shadow-sm text-center">
+                            <p class="text-sm text-gray-600">Score de Viabilidad</p>
+                            <p id="resultViabilityScore" class="score-display">--</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Sección de observaciones -->
+                <div class="mb-8">
+                    <h3 class="text-2xl font-semibold mb-4 text-gray-700">Observaciones</h3>
+                    <div class="bg-gray-50 p-6 rounded-lg shadow-sm">
+                        <p class="text-gray-700 mb-3" id="observationsSummary">
+                            <!-- Summary will be injected here -->
+                        </p>
+                        <p class="text-gray-700 font-medium" id="observationsAdvice">
+                            <!-- Advice will be injected here -->
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 3. Gráficos dinámicos -->
+                <div class="mb-8">
+                    <h3 class="text-2xl font-semibold mb-4 text-gray-700">Gráficos Clave</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <canvas id="breakEvenChart"></canvas>
+                            <p class="text-center text-sm text-gray-500 mt-2">Punto de Equilibrio: Unidades Mínimas a Vender</p>
+                        </div>
+                        <div>
+                            <canvas id="contributionMarginChart"></canvas>
+                            <p class="text-center text-sm text-gray-500 mt-2">Margen de Contribución por Producto/Servicio</p>
+                        </div>
+                        <div>
+                            <canvas id="costDistributionChart"></canvas>
+                            <p class="text-center text-sm text-gray-500 mt-2">Distribución de Gastos Fijos Mensuales</p>
+                        </div>
+                        <div>
+                            <canvas id="operatingCostChart"></canvas>
+                            <p class="text-center text-sm text-gray-500 mt-2">Coste de Operación por Día y Hora</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-center mt-8">
+                    <button class="btn btn-primary" onclick="resetForm()">Empezar nueva evaluación</button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="py-6 text-center text-gray-400 text-sm">
+        © Gari Peña. Todos los derechos reservados.
+    </footer>
+
+    <script>
+        let currentBlock = 1;
+        const totalBlocks = 7; // Now including the results block
+
+        // Store collected form data
+        let formData = {
+            products: [] // Initialize products as an empty array
+        };
+
+        // Chart instances to destroy before re-rendering
+        let breakEvenChartInstance, contributionMarginChartInstance, costDistributionChartInstance, operatingCostChartInstance;
+
+        // Function to show a specific block and hide others
+        function showBlock(blockNumber) {
+            for (let i = 1; i <= totalBlocks; i++) {
+                const block = document.getElementById(`block-${i}`);
+                if (block) {
+                    block.classList.add('hidden');
+                }
+            }
+            const targetBlock = document.getElementById(`block-${blockNumber}`);
+            if (targetBlock) {
+                targetBlock.classList.remove('hidden');
+            }
+        }
+
+        // Navigate to the next block
+        function nextBlock() {
+            if (currentBlock < totalBlocks) {
+                currentBlock++;
+                showBlock(currentBlock);
+            } else if (currentBlock === totalBlocks -1) { // If it's the last form block (Block 6)
+                submitForm();
+            }
+        }
+
+        // Navigate to the previous block
+        function prevBlock() {
+            if (currentBlock > 1) {
+                currentBlock--;
+                showBlock(currentBlock);
+            }
+        }
+
+        // Handle selection for button-like options
+        function selectOption(button, groupName) {
+            const buttonsInGroup = document.querySelectorAll(`[data-name="${groupName}"]`);
+            buttonsInGroup.forEach(btn => btn.classList.remove('selected'));
+            button.classList.add('selected');
+            // Store the selected value
+            formData[groupName] = button.dataset.value;
+        }
+
+        // Toggle visibility of expense amount input
+        function toggleExpenseInput(checkbox, inputId) {
+            const input = document.getElementById(inputId);
+            if (input) {
+                if (checkbox.checked) {
+                    input.classList.remove('hidden');
+                    input.focus();
+                } else {
+                    input.classList.add('hidden');
+                    input.value = ''; // Clear value when hidden
+                }
+            }
+        }
+
+        // Add a new product/service entry
+        function addProductEntry() {
+            const container = document.getElementById('productsServicesContainer');
+            const newEntry = document.createElement('div');
+            newEntry.className = 'product-entry';
+            const productCount = container.children.length + 1;
+            newEntry.innerHTML = `
+                <button type="button" class="remove-btn" onclick="removeProductEntry(this)">X</button>
+                <h4 class="text-lg font-medium mb-4 text-gray-800">Producto/Servicio ${productCount}</h4>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-medium mb-2">Nombre del Producto/Servicio</label>
+                    <input type="text" class="product-name" placeholder="Ej: Consultoría SEO">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-medium mb-2">Precio medio de venta (€)</label>
+                    <input type="number" class="product-avg-price" min="0" step="0.01" placeholder="Ej: 150.00">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-medium mb-2">Coste variable por unidad (€)</label>
+                    <input type="number" class="product-variable-cost" min="0" step="0.01" placeholder="Ej: 30.00">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-medium mb-2">Unidades esperadas a vender al mes</label>
+                    <input type="number" class="product-units-per-month" min="0" placeholder="Ej: 10">
+                </div>
+            `;
+            container.appendChild(newEntry);
+        }
+
+        // Remove a product/service entry
+        function removeProductEntry(button) {
+            const entry = button.closest('.product-entry');
+            if (entry) {
+                entry.remove();
+                // Re-label remaining entries
+                const container = document.getElementById('productsServicesContainer');
+                Array.from(container.children).forEach((child, index) => {
+                    const title = child.querySelector('h4');
+                    if (title) {
+                        title.textContent = `Producto/Servicio ${index + 1}`;
+                    }
+                });
+            }
+        }
+
+        // Calculate total estimated monthly revenue for all products/services
+        function calculateTotalRevenue() {
+            let totalRevenue = 0;
+            const productEntries = document.querySelectorAll('#productsServicesContainer .product-entry');
+            productEntries.forEach(entry => {
+                const avgPrice = parseFloat(entry.querySelector('.product-avg-price').value) || 0;
+                const unitsPerMonth = parseFloat(entry.querySelector('.product-units-per-month').value) || 0;
+                totalRevenue += avgPrice * unitsPerMonth;
+            });
+            document.getElementById('estimatedTotalRevenue').value = totalRevenue.toFixed(2);
+        }
+
+        // Function to collect all form data
+        function collectFormData() {
+            // Block 2
+            formData.projectName = document.getElementById('projectName').value;
+            formData.problemSolved = document.getElementById('problemSolved').value;
+            formData.sector = document.getElementById('sector').value;
+            // sellType and sellLocation are handled by selectOption
+            formData.differentiation = document.getElementById('differentiation').value;
+
+            // Block 3
+            // needsSpace, hasEmployees, fundingSecured are handled by selectOption
+            formData.spaceType = document.getElementById('spaceType').value;
+            formData.hoursPerDay = parseFloat(document.getElementById('hoursPerDay').value) || 0;
+            formData.daysPerWeek = parseFloat(document.getElementById('daysPerWeek').value) || 0;
+            formData.canDelegate = document.getElementById('canDelegate').value;
+
+            // Block 4
+            formData.initialInvestmentEstimate = document.getElementById('initialInvestment').value;
+            formData.initialExpenses = {};
+            document.querySelectorAll('#initialExpensesContainer input[type="checkbox"]:checked').forEach(checkbox => {
+                const amountInput = document.getElementById(checkbox.id + 'Amount');
+                formData.initialExpenses[checkbox.value] = parseFloat(amountInput.value) || 0;
+            });
+
+            formData.monthlyExpenses = {};
+            document.querySelectorAll('#monthlyExpensesContainer input[type="checkbox"]:checked').forEach(checkbox => {
+                const amountInput = document.getElementById(checkbox.id + 'Amount');
+                formData.monthlyExpenses[checkbox.value] = parseFloat(amountInput.value) || 0;
+            });
+
+            // Block 5 - Multiple Products/Services
+            formData.products = [];
+            const productEntries = document.querySelectorAll('#productsServicesContainer .product-entry');
+            productEntries.forEach(entry => {
+                const productName = entry.querySelector('.product-name').value;
+                const avgPrice = parseFloat(entry.querySelector('.product-avg-price').value) || 0;
+                const variableCost = parseFloat(entry.querySelector('.product-variable-cost').value) || 0;
+                const unitsPerMonth = parseFloat(entry.querySelector('.product-units-per-month').value) || 0;
+                formData.products.push({
+                    name: productName || 'Producto/Servicio sin nombre',
+                    avgPrice: avgPrice,
+                    variableCost: variableCost,
+                    unitsPerMonth: unitsPerMonth,
+                    estimatedMonthlyRevenue: avgPrice * unitsPerMonth,
+                    unitMargin: avgPrice - variableCost
+                });
+            });
+            formData.estimatedTotalRevenue = parseFloat(document.getElementById('estimatedTotalRevenue').value) || 0;
+            // salesTest is handled by selectOption
+
+            // Block 6
+            formData.projectStatus = document.getElementById('projectStatus').value;
+            formData.risks = [];
+            document.querySelectorAll('#risksContainer input[type="checkbox"]:checked').forEach(checkbox => {
+                formData.risks.push(checkbox.value);
+            });
+            // fundingSecured is handled by selectOption
+
+            console.log("Collected Form Data:", formData);
+        }
+
+        // Function to display results and generate charts
+        function displayResults() {
+            collectFormData(); // Ensure data is up-to-date
+
+            // --- Calculations ---
+            let totalInitialInvestment = 0;
+            for (const key in formData.initialExpenses) {
+                totalInitialInvestment += formData.initialExpenses[key];
+            }
+
+            let totalMonthlyFixedExpenses = 0;
+            for (const key in formData.monthlyExpenses) {
+                totalMonthlyFixedExpenses += formData.monthlyExpenses[key];
+            }
+            const totalAnnualFixedCosts = totalMonthlyFixedExpenses * 12;
+
+            // Calculations for multiple products
+            let totalEstimatedMonthlyRevenue = 0;
+            let totalAnnualSalesVolumeUnits = 0;
+            let totalMonthlyContributionMargin = 0;
+            let weightedAverageUnitMargin = 0;
+            let totalUnitsSold = 0;
+
+            formData.products.forEach(product => {
+                totalEstimatedMonthlyRevenue += product.estimatedMonthlyRevenue;
+                totalAnnualSalesVolumeUnits += product.unitsPerMonth * 12;
+                totalMonthlyContributionMargin += (product.unitMargin * product.unitsPerMonth);
+                totalUnitsSold += product.unitsPerMonth;
+            });
+
+            if (totalUnitsSold > 0) {
+                weightedAverageUnitMargin = totalMonthlyContributionMargin / totalUnitsSold;
+            } else {
+                weightedAverageUnitMargin = 0; // Avoid division by zero
+            }
+
+            const estimatedAnnualRevenue = totalEstimatedMonthlyRevenue * 12;
+            const estimatedAnnualProfitability = estimatedAnnualRevenue - totalAnnualFixedCosts;
+
+            let breakEvenUnits = 0;
+            if (weightedAverageUnitMargin > 0) {
+                breakEvenUnits = totalAnnualFixedCosts / weightedAverageUnitMargin;
+            }
+            const breakEvenRevenue = breakEvenUnits * (totalEstimatedMonthlyRevenue / (totalUnitsSold || 1)); // Use average price if multiple products
+
+            // --- Risk and Viability Score (Basic Logic) ---
+            let riskScore = formData.risks.length * 10; // Each risk adds 10 points
+            if (formData.initialInvestmentEstimate === 'mas_20k') riskScore += 20;
+            if (formData.fundingSecured === 'no') riskScore += 30;
+            if (formData.projectStatus === 'solo_idea') riskScore += 15;
+
+            let riskLevel = 'Bajo';
+            let riskClass = 'risk-low';
+            if (riskScore > 40) {
+                riskLevel = 'Medio';
+                riskClass = 'risk-medium';
+            }
+            if (riskScore > 70) {
+                riskLevel = 'Alto';
+                riskClass = 'risk-high';
+            }
+
+            let viabilityScore = 50; // Base score
+            if (estimatedAnnualProfitability > 0) viabilityScore += Math.min(50, estimatedAnnualProfitability / 1000); // Max +50 for profitability
+            if (weightedAverageUnitMargin > 0) viabilityScore += 10;
+            if (formData.risks.length === 0) viabilityScore += 15;
+            if (formData.projectStatus === 'clientes_ventas') viabilityScore += 20;
+            if (formData.canDelegate === 'totalmente') viabilityScore += 10;
+            if (formData.fundingSecured === 'si') viabilityScore += 15;
+
+            viabilityScore = Math.max(0, Math.min(100, Math.round(viabilityScore))); // Cap between 0 and 100
+
+            // --- Populate Results Section ---
+            document.getElementById('resultProfitability').textContent = `${estimatedAnnualProfitability.toFixed(2)} €`;
+            document.getElementById('resultInitialInvestment').textContent = `${totalInitialInvestment.toFixed(2)} €`;
+            document.getElementById('resultAnnualFixedCosts').textContent = `${totalAnnualFixedCosts.toFixed(2)} €`;
+            document.getElementById('resultSalesVolume').textContent = `${totalAnnualSalesVolumeUnits.toFixed(0)} unidades`;
+            document.getElementById('resultBreakEvenUnits').textContent = `${breakEvenUnits.toFixed(0)} unidades (${breakEvenRevenue.toFixed(2)} €)`;
+            document.getElementById('resultTotalContributionMargin').textContent = `${totalMonthlyContributionMargin.toFixed(2)} €`; // Updated for total contribution
+            const riskElement = document.getElementById('resultRisk');
+            riskElement.textContent = riskLevel;
+            riskElement.className = `risk-level ${riskClass}`; // Apply class for color
+            document.getElementById('resultViabilityScore').textContent = `${viabilityScore}%`;
+
+            // --- Observations ---
+            let summaryText = `Tu proyecto "${formData.projectName || 'sin nombre'}" opera en el sector de ${formData.sector || 'no especificado'}. `;
+            summaryText += `Se enfoca en ${formData.sellType || 'productos/servicios no definidos'} y planea vender ${formData.sellLocation || 'en un lugar no definido'}. `;
+            summaryText += `Tu inversión inicial estimada es de ${totalInitialInvestment.toFixed(2)} € y tus gastos fijos mensuales ascienden a ${totalMonthlyFixedExpenses.toFixed(2)} €. `;
+            summaryText += `La rentabilidad anual estimada es de ${estimatedAnnualProfitability.toFixed(2)} €. `;
+
+            let adviceText = "Consejo: ";
+            if (viabilityScore >= 70) {
+                adviceText += "¡Tu idea tiene un gran potencial! Enfócate en la ejecución y en validar tus supuestos de mercado. Considera buscar financiación para escalar rápidamente.";
+            } else if (viabilityScore >= 40) {
+                adviceText += "Tu idea es prometedora, pero hay áreas de mejora. Revisa tus costes, busca formas de aumentar tu margen unitario y valida la demanda con pruebas reales. Un plan de contingencia para los riesgos detectados es crucial.";
+            } else {
+                adviceText += "Tu idea necesita una revisión profunda. Te recomendamos reevaluar tu propuesta de valor, reducir drásticamente los costes o explorar un modelo de negocio diferente para mejorar la viabilidad. La financiación y la demanda son puntos críticos a resolver.";
+            }
+
+            if (formData.risks.length > 0) {
+                adviceText += ` Riesgos detectados: ${formData.risks.join(', ')}.`;
+            }
+            if (formData.fundingSecured === 'no') {
+                adviceText += " La financiación es un punto clave a asegurar.";
+            } else if (formData.fundingSecured === 'no_se') {
+                adviceText += " Es vital investigar las opciones de financiación.";
+            }
+
+            document.getElementById('observationsSummary').textContent = summaryText;
+            document.getElementById('observationsAdvice').textContent = adviceText;
+
+            // --- Destroy existing charts before creating new ones ---
+            if (breakEvenChartInstance) breakEvenChartInstance.destroy();
+            if (contributionMarginChartInstance) contributionMarginChartInstance.destroy();
+            if (costDistributionChartInstance) costDistributionChartInstance.destroy();
+            if (operatingCostChartInstance) operatingCostChartInstance.destroy();
+
+            // --- Generate Charts ---
+
+            // Break-even Chart
+            const ctxBreakEven = document.getElementById('breakEvenChart').getContext('2d');
+            breakEvenChartInstance = new Chart(ctxBreakEven, {
+                type: 'bar',
+                data: {
+                    labels: ['Unidades de Equilibrio', 'Unidades Esperadas (Mensual)'],
+                    datasets: [{
+                        label: 'Unidades',
+                        data: [breakEvenUnits, totalUnitsSold], // Use totalUnitsSold for comparison
+                        backgroundColor: ['rgba(255, 99, 132, 0.6)', 'rgba(54, 162, 235, 0.6)'],
+                        borderColor: ['rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Punto de Equilibrio vs. Ventas Esperadas'
+                        },
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Unidades'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Contribution Margin Chart (for multiple products)
+            const productNames = formData.products.map(p => p.name);
+            const productUnitMargins = formData.products.map(p => p.unitMargin);
+            const ctxContribution = document.getElementById('contributionMarginChart').getContext('2d');
+            contributionMarginChartInstance = new Chart(ctxContribution, {
+                type: 'bar',
+                data: {
+                    labels: productNames,
+                    datasets: [{
+                        label: 'Margen Unitario (€)',
+                        data: productUnitMargins,
+                        backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Margen de Contribución por Producto/Servicio'
+                        },
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Euros (€)'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Cost Distribution Chart (Doughnut for Monthly Fixed Expenses)
+            const monthlyExpenseLabels = Object.keys(formData.monthlyExpenses);
+            const monthlyExpenseValues = Object.values(formData.monthlyExpenses);
+            const ctxCostDistribution = document.getElementById('costDistributionChart').getContext('2d');
+            costDistributionChartInstance = new Chart(ctxCostDistribution, {
+                type: 'doughnut',
+                data: {
+                    labels: monthlyExpenseLabels,
+                    datasets: [{
+                        label: 'Gastos Mensuales',
+                        data: monthlyExpenseValues,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.6)',
+                            'rgba(54, 162, 235, 0.6)',
+                            'rgba(255, 206, 86, 0.6)',
+                            'rgba(75, 192, 192, 0.6)',
+                            'rgba(153, 102, 255, 0.6)',
+                            'rgba(255, 159, 64, 0.6)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Distribución de Gastos Fijos Mensuales'
+                        },
+                        legend: {
+                            position: 'right',
+                        }
+                    }
+                }
+            });
+
+            // Operating Cost Chart (Cost per Hour/Day)
+            const dailyOperatingCost = totalMonthlyFixedExpenses / (formData.daysPerWeek > 0 ? formData.daysPerWeek * 4 : 1); // Approx 4 weeks per month
+            const costPerHour = formData.hoursPerDay > 0 ? dailyOperatingCost / formData.hoursPerDay : 0;
+
+            const ctxOperatingCost = document.getElementById('operatingCostChart').getContext('2d');
+            operatingCostChartInstance = new Chart(ctxOperatingCost, {
+                type: 'bar',
+                data: {
+                    labels: ['Coste Diario Estimado', 'Coste por Hora Estimado'],
+                    datasets: [{
+                        label: 'Coste (€)',
+                        data: [dailyOperatingCost, costPerHour],
+                        backgroundColor: ['rgba(255, 99, 132, 0.6)', 'rgba(54, 162, 235, 0.6)'],
+                        borderColor: ['rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Coste de Operación por Día y Hora'
+                        },
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Euros (€)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Function to handle form submission (e.g., collect data and display summary)
+        function submitForm() {
+            // Move to the results block
+            currentBlock = totalBlocks;
+            showBlock(currentBlock);
+            displayResults(); // Call the function to calculate and display results
+        }
+
+        // Function to reset the form and go back to the welcome screen
+        function resetForm() {
+            // Clear all form fields
+            document.getElementById('projectName').value = '';
+            document.getElementById('problemSolved').value = '';
+            document.getElementById('sector').value = '';
+            document.getElementById('differentiation').value = '';
+            document.getElementById('hoursPerDay').value = '';
+            document.getElementById('daysPerWeek').value = '';
+            document.getElementById('spaceType').value = '';
+            document.getElementById('initialInvestment').value = '';
+            document.getElementById('estimatedTotalRevenue').value = ''; // Clear total revenue
+            document.getElementById('projectStatus').value = '';
+
+            // Deselect all option buttons
+            document.querySelectorAll('.option-button.selected').forEach(btn => btn.classList.remove('selected'));
+
+            // Uncheck all checkboxes and hide their inputs
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                checkbox.checked = false;
+                const inputId = checkbox.id + 'Amount';
+                const input = document.getElementById(inputId);
+                if (input) {
+                    input.classList.add('hidden');
+                    input.value = '';
+                }
+            });
+
+            // Clear all product entries except the first one
+            const productsContainer = document.getElementById('productsServicesContainer');
+            while (productsContainer.children.length > 1) {
+                productsContainer.removeChild(productsContainer.lastChild);
+            }
+            // Clear the first product entry's values
+            const firstProductEntry = productsContainer.querySelector('.product-entry');
+            if (firstProductEntry) {
+                firstProductEntry.querySelector('.product-name').value = '';
+                firstProductEntry.querySelector('.product-avg-price').value = '';
+                firstProductEntry.querySelector('.product-variable-cost').value = '';
+                firstProductEntry.querySelector('.product-units-per-month').value = '';
+                firstProductEntry.querySelector('h4').textContent = 'Producto/Servicio 1'; // Reset title
+            }
+
+
+            // Clear formData object
+            formData = { products: [] }; // Reset products array
+
+            // Destroy chart instances if they exist
+            if (breakEvenChartInstance) breakEvenChartInstance.destroy();
+            if (contributionMarginChartInstance) contributionMarginChartInstance.destroy();
+            if (costDistributionChartInstance) costDistributionChartInstance.destroy();
+            if (operatingCostChartInstance) operatingCostChartInstance.destroy();
+
+            currentBlock = 1;
+            showBlock(currentBlock);
+        }
+
+        // Initial display: show only the first block on load
+        document.addEventListener('DOMContentLoaded', () => {
+            showBlock(currentBlock);
+        });
+    </script>
+</body>
+</html>
