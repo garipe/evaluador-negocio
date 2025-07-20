@@ -20,12 +20,31 @@
             max-width: 800px;
         }
         .form-block {
-            background-color: #ffffff;
+            background-color: #f9fcff; /* Toque azul clarito */
             border-radius: 1rem; /* Rounded corners */
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.03); /* Sombra ligeramente ajustada */
             padding: 2.5rem;
             margin-bottom: 2rem;
         }
+        /* Specific styling for the welcome block */
+        #block-1 {
+            background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%); /* Light blue gradient */
+            padding: 4rem 2.5rem; /* More vertical padding */
+            border-radius: 1.5rem; /* More rounded corners */
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            animation: fadeInScale 0.8s ease-out; /* Subtle animation */
+        }
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
         input[type="text"],
         input[type="number"],
         textarea,
@@ -60,6 +79,20 @@
             background-color: #2563eb; /* Azul más oscuro */
             transform: translateY(-1px);
         }
+        /* Enhanced button styling for the welcome screen */
+        #block-1 .btn-primary {
+            padding: 1rem 2.5rem; /* Larger padding */
+            font-size: 1.25rem; /* Larger font */
+            border-radius: 1rem; /* More rounded */
+            background: linear-gradient(45deg, #3b82f6, #60a5fa); /* Gradient for primary button */
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3); /* Subtle shadow */
+        }
+        #block-1 .btn-primary:hover {
+            background: linear-gradient(45deg, #2563eb, #3b82f6);
+            box-shadow: 0 7px 20px rgba(37, 99, 235, 0.4);
+            transform: translateY(-2px);
+        }
+
         .btn-secondary {
             background-color: #e2e8f0; /* Gris claro */
             color: #475569; /* Gris oscuro */
@@ -160,9 +193,17 @@
 
             <!-- Bloque 1 – Bienvenida -->
             <div id="block-1" class="form-block text-center">
+                <!-- Icono SVG de un chip/circuito para AI/tecnología -->
+                <svg class="mx-auto mb-6 text-blue-600" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="3" width="20" height="18" rx="2" ry="2"></rect>
+                    <line x1="8" y1="2" x2="8" y2="22"></line>
+                    <line x1="16" y1="2" x2="16" y2="22"></line>
+                    <line x1="2" y1="8" x2="22" y2="8"></line>
+                    <line x1="2" y1="16" x2="22" y2="16"></line>
+                </svg>
                 <h1 class="text-4xl font-bold mb-4 text-gray-800">Evalúa tu idea de negocio en 5 pasos</h1>
                 <p class="text-lg text-gray-600 mb-8">Descubre si tiene potencial, cuánto necesitas invertir y qué mejorar.</p>
-                <button class="btn btn-primary text-xl" onclick="nextBlock()">Empezar evaluación</button>
+                <button class="btn btn-primary" onclick="nextBlock()">Empezar evaluación</button>
             </div>
 
             <!-- Bloque 2 – Tu idea en pocas palabras -->
@@ -507,6 +548,10 @@
                             <p class="text-sm text-gray-600">Margen de Contribución Total (Mensual)</p>
                             <p id="resultTotalContributionMargin" class="text-xl font-bold text-teal-700">--</p>
                         </div>
+                        <div class="p-4 bg-orange-50 rounded-lg shadow-sm">
+                            <p class="text-sm text-gray-600">ROI (Retorno de la Inversión)</p>
+                            <p id="resultROI" class="text-xl font-bold text-orange-700">--</p>
+                        </div>
                         <div class="p-4 bg-gray-100 rounded-lg shadow-sm text-center">
                             <p class="text-sm text-gray-600">Riesgo de la Idea</p>
                             <p id="resultRisk" class="risk-level">--</p>
@@ -551,6 +596,10 @@
                             <canvas id="operatingCostChart"></canvas>
                             <p class="text-center text-sm text-gray-500 mt-2">Coste de Operación por Día y Hora</p>
                         </div>
+                        <div>
+                            <canvas id="riskProfitabilityMatrix"></canvas>
+                            <p class="text-center text-sm text-gray-500 mt-2">Matriz Riesgo vs. Rentabilidad Anual</p>
+                        </div>
                     </div>
                 </div>
 
@@ -576,7 +625,7 @@
         };
 
         // Chart instances to destroy before re-rendering
-        let breakEvenChartInstance, contributionMarginChartInstance, costDistributionChartInstance, operatingCostChartInstance;
+        let breakEvenChartInstance, contributionMarginChartInstance, costDistributionChartInstance, operatingCostChartInstance, riskProfitabilityMatrixInstance;
 
         // Function to show a specific block and hide others
         function showBlock(blockNumber) {
@@ -796,6 +845,15 @@
             }
             const breakEvenRevenue = breakEvenUnits * (totalEstimatedMonthlyRevenue / (totalUnitsSold || 1)); // Use average price if multiple products
 
+            // --- ROI Calculation ---
+            let roi = 0;
+            if (totalInitialInvestment > 0) {
+                roi = (estimatedAnnualProfitability / totalInitialInvestment) * 100;
+            } else {
+                roi = 'N/A'; // Handle division by zero
+            }
+
+
             // --- Risk and Viability Score (Basic Logic) ---
             let riskScore = formData.risks.length * 10; // Each risk adds 10 points
             if (formData.initialInvestmentEstimate === 'mas_20k') riskScore += 20;
@@ -830,6 +888,7 @@
             document.getElementById('resultSalesVolume').textContent = `${totalAnnualSalesVolumeUnits.toFixed(0)} unidades`;
             document.getElementById('resultBreakEvenUnits').textContent = `${breakEvenUnits.toFixed(0)} unidades (${breakEvenRevenue.toFixed(2)} €)`;
             document.getElementById('resultTotalContributionMargin').textContent = `${totalMonthlyContributionMargin.toFixed(2)} €`; // Updated for total contribution
+            document.getElementById('resultROI').textContent = (typeof roi === 'number' ? `${roi.toFixed(2)}%` : roi); // Display ROI
             const riskElement = document.getElementById('resultRisk');
             riskElement.textContent = riskLevel;
             riskElement.className = `risk-level ${riskClass}`; // Apply class for color
@@ -840,6 +899,13 @@
             summaryText += `Se enfoca en ${formData.sellType || 'productos/servicios no definidos'} y planea vender ${formData.sellLocation || 'en un lugar no definido'}. `;
             summaryText += `Tu inversión inicial estimada es de ${totalInitialInvestment.toFixed(2)} € y tus gastos fijos mensuales ascienden a ${totalMonthlyFixedExpenses.toFixed(2)} €. `;
             summaryText += `La rentabilidad anual estimada es de ${estimatedAnnualProfitability.toFixed(2)} €. `;
+            if (typeof roi === 'number') {
+                summaryText += `El retorno de la inversión (ROI) estimado es del ${roi.toFixed(2)}%.`;
+            } else {
+                summaryText += `El retorno de la inversión (ROI) no aplica al no haber inversión inicial.`;
+            }
+            summaryText += ` Consulta la matriz Riesgo vs. Rentabilidad para una visión visual de tu idea.`;
+
 
             let adviceText = "Consejo: ";
             if (viabilityScore >= 70) {
@@ -867,6 +933,7 @@
             if (contributionMarginChartInstance) contributionMarginChartInstance.destroy();
             if (costDistributionChartInstance) costDistributionChartInstance.destroy();
             if (operatingCostChartInstance) operatingCostChartInstance.destroy();
+            if (riskProfitabilityMatrixInstance) riskProfitabilityMatrixInstance.destroy(); // Destroy new chart instance
 
             // --- Generate Charts ---
 
@@ -1029,6 +1096,68 @@
                     }
                 }
             });
+
+            // New: Risk vs. Profitability Matrix
+            const ctxRiskProfitability = document.getElementById('riskProfitabilityMatrix').getContext('2d');
+            riskProfitabilityMatrixInstance = new Chart(ctxRiskProfitability, {
+                type: 'scatter',
+                data: {
+                    datasets: [{
+                        label: 'Tu Idea de Negocio',
+                        data: [{
+                            x: estimatedAnnualProfitability, // Rentabilidad Anual Estimada
+                            y: riskScore // Puntuación de Riesgo
+                        }],
+                        backgroundColor: 'rgba(59, 130, 246, 0.8)', // Azul vibrante
+                        borderColor: 'rgba(29, 78, 216, 1)',
+                        borderWidth: 2,
+                        pointRadius: 8, // Tamaño del punto
+                        pointHoverRadius: 10,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Matriz Riesgo vs. Rentabilidad Anual'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `Rentabilidad: ${context.parsed.x.toFixed(2)} €, Riesgo: ${context.parsed.y.toFixed(0)}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            type: 'linear',
+                            position: 'bottom',
+                            title: {
+                                display: true,
+                                text: 'Rentabilidad Anual Estimada (€)'
+                            },
+                            grid: {
+                                borderColor: '#e2e8f0',
+                                color: '#e2e8f0',
+                            }
+                        },
+                        y: {
+                            type: 'linear',
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text: 'Puntuación de Riesgo'
+                            },
+                            grid: {
+                                borderColor: '#e2e8f0',
+                                color: '#e2e8f0',
+                            }
+                        }
+                    }
+                }
+            });
         }
 
         // Function to handle form submission (e.g., collect data and display summary)
@@ -1091,6 +1220,7 @@
             if (contributionMarginChartInstance) contributionMarginChartInstance.destroy();
             if (costDistributionChartInstance) costDistributionChartInstance.destroy();
             if (operatingCostChartInstance) operatingCostChartInstance.destroy();
+            if (riskProfitabilityMatrixInstance) riskProfitabilityMatrixInstance.destroy(); // Destroy new chart instance
 
             currentBlock = 1;
             showBlock(currentBlock);
