@@ -185,6 +185,70 @@
         .product-entry .remove-btn:hover {
             background-color: #dc2626;
         }
+
+        /* Tooltip styles */
+        .tooltip-container {
+            position: relative;
+        }
+
+        .info-icon {
+            position: absolute;
+            top: 0.75rem; /* Ajusta según sea necesario para el padding del contenedor */
+            right: 0.75rem; /* Ajusta según sea necesario para el padding del contenedor */
+            width: 20px;
+            height: 20px;
+            background-color: #a0aec0; /* Gris medio */
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: bold;
+            cursor: help; /* Cambia el cursor para indicar que es informativo */
+            z-index: 10;
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        .info-icon:hover {
+            background-color: #60a5fa; /* Azul al pasar el ratón */
+        }
+
+        .info-icon .tooltip-text {
+            visibility: hidden;
+            opacity: 0;
+            width: 200px; /* Ancho del tooltip */
+            background-color: #334155; /* Fondo oscuro */
+            color: #fff;
+            text-align: center;
+            border-radius: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            position: absolute;
+            z-index: 100;
+            bottom: 125%; /* Posiciona encima del icono */
+            left: 50%;
+            margin-left: -100px; /* Centra el tooltip */
+            transition: opacity 0.3s, visibility 0.3s;
+            font-size: 0.875rem;
+            line-height: 1.25;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .info-icon .tooltip-text::after {
+            content: "";
+            position: absolute;
+            top: 100%; /* En la parte inferior */
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #334155 transparent transparent transparent; /* Triángulo apuntando hacia abajo */
+        }
+
+        .info-icon:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
     </style>
 </head>
 <body class="flex flex-col min-h-screen">
@@ -193,6 +257,8 @@
 
             <!-- Bloque 1 – Bienvenida -->
             <div id="block-1" class="form-block text-center">
+                <!-- Logo de Gari Peña -->
+                <img src="Logo Gari Peña.png" alt="Logo Gari Peña" class="mx-auto mb-6 w-32 h-auto rounded-lg shadow-md">
                 <!-- Icono SVG de un chip/circuito para AI/tecnología -->
                 <svg class="mx-auto mb-6 text-blue-600" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                     <rect x="2" y="3" width="20" height="18" rx="2" ry="2"></rect>
@@ -524,41 +590,55 @@
                 <div class="mb-8">
                     <h3 class="text-2xl font-semibold mb-4 text-gray-700">Indicadores Clave</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="p-4 bg-blue-50 rounded-lg shadow-sm">
+                        <div class="p-4 bg-blue-50 rounded-lg shadow-sm relative tooltip-container">
                             <p class="text-sm text-gray-600">Rentabilidad Anual Estimada</p>
                             <p id="resultProfitability" class="text-xl font-bold text-blue-700">--</p>
+                            <div class="info-icon" data-tooltip="Beneficio (o pérdida) esperado anualmente después de cubrir costes fijos y variables.">i<span class="tooltip-text">Beneficio (o pérdida) esperado anualmente después de cubrir costes fijos y variables.</span></div>
                         </div>
-                        <div class="p-4 bg-green-50 rounded-lg shadow-sm">
+                        <div class="p-4 bg-green-50 rounded-lg shadow-sm relative tooltip-container">
                             <p class="text-sm text-gray-600">Inversión Inicial Total</p>
                             <p id="resultInitialInvestment" class="text-xl font-bold text-green-700">--</p>
+                            <div class="info-icon" data-tooltip="Suma total de los gastos necesarios para iniciar el negocio.">i<span class="tooltip-text">Suma total de los gastos necesarios para iniciar el negocio.</span></div>
                         </div>
-                        <div class="p-4 bg-red-50 rounded-lg shadow-sm">
+                        <div class="p-4 bg-red-50 rounded-lg shadow-sm relative tooltip-container">
                             <p class="text-sm text-gray-600">Costes Fijos Anuales</p>
                             <p id="resultAnnualFixedCosts" class="text-xl font-bold text-red-700">--</p>
+                            <div class="info-icon" data-tooltip="Gastos recurrentes anuales que no varían con el volumen de ventas (ej. alquiler, salarios).">i<span class="tooltip-text">Gastos recurrentes anuales que no varían con el volumen de ventas (ej. alquiler, salarios).</span></div>
                         </div>
-                        <div class="p-4 bg-purple-50 rounded-lg shadow-sm">
+                        <div class="p-4 bg-purple-50 rounded-lg shadow-sm relative tooltip-container">
                             <p class="text-sm text-gray-600">Volumen de Ventas (Unidades/Año)</p>
                             <p id="resultSalesVolume" class="text-xl font-bold text-purple-700">--</p>
+                            <div class="info-icon" data-tooltip="Número total de unidades de productos/servicios que se espera vender en un año.">i<span class="tooltip-text">Número total de unidades de productos/servicios que se espera vender en un año.</span></div>
                         </div>
-                        <div class="p-4 bg-yellow-50 rounded-lg shadow-sm">
+                        <div class="p-4 bg-yellow-50 rounded-lg shadow-sm relative tooltip-container">
                             <p class="text-sm text-gray-600">Punto de Equilibrio (Unidades)</p>
                             <p id="resultBreakEvenUnits" class="text-xl font-bold text-yellow-700">--</p>
+                            <div class="info-icon" data-tooltip="Número de unidades que necesitas vender para cubrir todos tus costes (fijos y variables).">i<span class="tooltip-text">Número de unidades que necesitas vender para cubrir todos tus costes (fijos y variables).</span></div>
                         </div>
-                        <div class="p-4 bg-teal-50 rounded-lg shadow-sm">
+                        <div class="p-4 bg-teal-50 rounded-lg shadow-sm relative tooltip-container">
                             <p class="text-sm text-gray-600">Margen de Contribución Total (Mensual)</p>
                             <p id="resultTotalContributionMargin" class="text-xl font-bold text-teal-700">--</p>
+                            <div class="info-icon" data-tooltip="Dinero que queda de las ventas mensuales después de cubrir los costes variables, disponible para cubrir costes fijos y generar beneficio.">i<span class="tooltip-text">Dinero que queda de las ventas mensuales después de cubrir los costes variables, disponible para cubrir costes fijos y generar beneficio.</span></div>
                         </div>
-                        <div class="p-4 bg-orange-50 rounded-lg shadow-sm">
+                        <div class="p-4 bg-orange-50 rounded-lg shadow-sm relative tooltip-container">
                             <p class="text-sm text-gray-600">ROI (Retorno de la Inversión)</p>
                             <p id="resultROI" class="text-xl font-bold text-orange-700">--</p>
+                            <div class="info-icon" data-tooltip="Porcentaje de beneficio obtenido en relación con la inversión inicial.">i<span class="tooltip-text">Porcentaje de beneficio obtenido en relación con la inversión inicial.</span></div>
                         </div>
-                        <div class="p-4 bg-gray-100 rounded-lg shadow-sm text-center">
+                        <div class="p-4 bg-lime-50 rounded-lg shadow-sm relative tooltip-container">
+                            <p class="text-sm text-gray-600">Periodo de Recuperación (Payback)</p>
+                            <p id="resultPaybackPeriod" class="text-xl font-bold text-lime-700">--</p>
+                            <div class="info-icon" data-tooltip="Tiempo estimado (en años) que tardarás en recuperar la inversión inicial con la rentabilidad anual.">i<span class="tooltip-text">Tiempo estimado (en años) que tardarás en recuperar la inversión inicial con la rentabilidad anual.</span></div>
+                        </div>
+                        <div class="p-4 bg-gray-100 rounded-lg shadow-sm text-center relative tooltip-container">
                             <p class="text-sm text-gray-600">Riesgo de la Idea</p>
                             <p id="resultRisk" class="risk-level">--</p>
+                            <div class="info-icon" data-tooltip="Nivel de riesgo asociado a la idea de negocio según los factores identificados.">i<span class="tooltip-text">Nivel de riesgo asociado a la idea de negocio según los factores identificados.</span></div>
                         </div>
-                        <div class="p-4 bg-gray-100 rounded-lg shadow-sm text-center">
+                        <div class="p-4 bg-gray-100 rounded-lg shadow-sm text-center relative tooltip-container">
                             <p class="text-sm text-gray-600">Score de Viabilidad</p>
                             <p id="resultViabilityScore" class="score-display">--</p>
+                            <div class="info-icon" data-tooltip="Puntuación general de la viabilidad de la idea, de 0 a 100%.">i<span class="tooltip-text">Puntuación general de la viabilidad de la idea, de 0 a 100%.</span></div>
                         </div>
                     </div>
                 </div>
@@ -582,11 +662,15 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div>
                             <canvas id="breakEvenChart"></canvas>
-                            <p class="text-center text-sm text-gray-500 mt-2">Punto de Equilibrio: Unidades Mínimas a Vender</p>
+                            <p class="text-center text-sm text-gray-500 mt-2">Punto de Equilibrio Anual vs. Ventas Esperadas Anuales</p>
                         </div>
                         <div>
                             <canvas id="contributionMarginChart"></canvas>
                             <p class="text-center text-sm text-gray-500 mt-2">Margen de Contribución por Producto/Servicio</p>
+                        </div>
+                        <div>
+                            <canvas id="riskProfitabilityMatrix"></canvas>
+                            <p class="text-center text-sm text-gray-500 mt-2">Matriz Riesgo vs. Rentabilidad Anual</p>
                         </div>
                         <div>
                             <canvas id="costDistributionChart"></canvas>
@@ -594,11 +678,7 @@
                         </div>
                         <div>
                             <canvas id="operatingCostChart"></canvas>
-                            <p class="text-center text-sm text-gray-500 mt-2">Coste de Operación por Día y Hora</p>
-                        </div>
-                        <div>
-                            <canvas id="riskProfitabilityMatrix"></canvas>
-                            <p class="text-center text-sm text-gray-500 mt-2">Matriz Riesgo vs. Rentabilidad Anual</p>
+                            <p class="text-center text-sm text-gray-500 mt-2">Coste vs. Ingreso de Operación por Día</p>
                         </div>
                     </div>
                 </div>
@@ -629,6 +709,9 @@
 
         // Function to show a specific block and hide others
         function showBlock(blockNumber) {
+            // Scroll to the top of the page
+            window.scrollTo(0, 0);
+
             for (let i = 1; i <= totalBlocks; i++) {
                 const block = document.getElementById(`block-${i}`);
                 if (block) {
@@ -821,29 +904,31 @@
             let totalAnnualSalesVolumeUnits = 0;
             let totalMonthlyContributionMargin = 0;
             let weightedAverageUnitMargin = 0;
-            let totalUnitsSold = 0;
+            let totalUnitsSoldMonthly = 0; // Renamed for clarity: monthly total units sold
 
             formData.products.forEach(product => {
                 totalEstimatedMonthlyRevenue += product.estimatedMonthlyRevenue;
-                totalAnnualSalesVolumeUnits += product.unitsPerMonth * 12;
+                totalAnnualSalesVolumeUnits += product.unitsPerMonth * 12; // This is ANNUAL total units sold
                 totalMonthlyContributionMargin += (product.unitMargin * product.unitsPerMonth);
-                totalUnitsSold += product.unitsPerMonth;
+                totalUnitsSoldMonthly += product.unitsPerMonth;
             });
 
-            if (totalUnitsSold > 0) {
-                weightedAverageUnitMargin = totalMonthlyContributionMargin / totalUnitsSold;
+            if (totalUnitsSoldMonthly > 0) {
+                weightedAverageUnitMargin = totalMonthlyContributionMargin / totalUnitsSoldMonthly;
             } else {
                 weightedAverageUnitMargin = 0; // Avoid division by zero
             }
 
-            const estimatedAnnualRevenue = totalEstimatedMonthlyRevenue * 12;
-            const estimatedAnnualProfitability = estimatedAnnualRevenue - totalAnnualFixedCosts;
+            // CORRECTED: Rentabilidad Anual Estimada (Beneficio Neto Anual)
+            // This now correctly subtracts all costs (fixed and variable)
+            const estimatedAnnualProfitability = (totalMonthlyContributionMargin * 12) - totalAnnualFixedCosts;
+
 
             let breakEvenUnits = 0;
             if (weightedAverageUnitMargin > 0) {
                 breakEvenUnits = totalAnnualFixedCosts / weightedAverageUnitMargin;
             }
-            const breakEvenRevenue = breakEvenUnits * (totalEstimatedMonthlyRevenue / (totalUnitsSold || 1)); // Use average price if multiple products
+            const breakEvenRevenue = breakEvenUnits * (totalEstimatedMonthlyRevenue / (totalUnitsSoldMonthly || 1)); // Use average price if multiple products
 
             // --- ROI Calculation ---
             let roi = 0;
@@ -851,6 +936,18 @@
                 roi = (estimatedAnnualProfitability / totalInitialInvestment) * 100;
             } else {
                 roi = 'N/A'; // Handle division by zero
+            }
+
+            // --- Payback Period Calculation ---
+            let paybackPeriod = '';
+            if (totalInitialInvestment <= 0) {
+                paybackPeriod = 'No aplica (sin inversión inicial)';
+            } else if (estimatedAnnualProfitability <= 0) {
+                paybackPeriod = 'No aplica (rentabilidad negativa o nula)';
+            } else {
+                // Format the number for Spanish locale with one decimal place
+                const paybackYears = (totalInitialInvestment / estimatedAnnualProfitability).toLocaleString('es-ES', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+                paybackPeriod = `${paybackYears} años`;
             }
 
 
@@ -872,7 +969,13 @@
             }
 
             let viabilityScore = 50; // Base score
-            if (estimatedAnnualProfitability > 0) viabilityScore += Math.min(50, estimatedAnnualProfitability / 1000); // Max +50 for profitability
+            // Adjust viability score based on the CORRECTED estimatedAnnualProfitability
+            if (estimatedAnnualProfitability > 0) {
+                viabilityScore += Math.min(50, estimatedAnnualProfitability / 1000); // Max +50 for profitability
+            } else {
+                viabilityScore = Math.max(0, viabilityScore + (estimatedAnnualProfitability / 500)); // Penalize for negative profitability
+            }
+
             if (weightedAverageUnitMargin > 0) viabilityScore += 10;
             if (formData.risks.length === 0) viabilityScore += 15;
             if (formData.projectStatus === 'clientes_ventas') viabilityScore += 20;
@@ -882,28 +985,30 @@
             viabilityScore = Math.max(0, Math.min(100, Math.round(viabilityScore))); // Cap between 0 and 100
 
             // --- Populate Results Section ---
-            document.getElementById('resultProfitability').textContent = `${estimatedAnnualProfitability.toFixed(2)} €`;
-            document.getElementById('resultInitialInvestment').textContent = `${totalInitialInvestment.toFixed(2)} €`;
-            document.getElementById('resultAnnualFixedCosts').textContent = `${totalAnnualFixedCosts.toFixed(2)} €`;
-            document.getElementById('resultSalesVolume').textContent = `${totalAnnualSalesVolumeUnits.toFixed(0)} unidades`;
-            document.getElementById('resultBreakEvenUnits').textContent = `${breakEvenUnits.toFixed(0)} unidades (${breakEvenRevenue.toFixed(2)} €)`;
-            document.getElementById('resultTotalContributionMargin').textContent = `${totalMonthlyContributionMargin.toFixed(2)} €`; // Updated for total contribution
-            document.getElementById('resultROI').textContent = (typeof roi === 'number' ? `${roi.toFixed(2)}%` : roi); // Display ROI
+            document.getElementById('resultProfitability').textContent = `${estimatedAnnualProfitability.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €`;
+            document.getElementById('resultInitialInvestment').textContent = `${totalInitialInvestment.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €`;
+            document.getElementById('resultAnnualFixedCosts').textContent = `${totalAnnualFixedCosts.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €`;
+            document.getElementById('resultSalesVolume').textContent = `${totalAnnualSalesVolumeUnits.toLocaleString('es-ES', { maximumFractionDigits: 0 })} unidades`;
+            document.getElementById('resultBreakEvenUnits').textContent = `${breakEvenUnits.toLocaleString('es-ES', { maximumFractionDigits: 0 })} unidades (${breakEvenRevenue.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €)`;
+            document.getElementById('resultTotalContributionMargin').textContent = `${totalMonthlyContributionMargin.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €`; // Updated for total contribution
+            document.getElementById('resultROI').textContent = (typeof roi === 'number' ? `${roi.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%` : roi); // Display ROI
+            document.getElementById('resultPaybackPeriod').textContent = paybackPeriod; // Display Payback Period
             const riskElement = document.getElementById('resultRisk');
             riskElement.textContent = riskLevel;
             riskElement.className = `risk-level ${riskClass}`; // Apply class for color
-            document.getElementById('resultViabilityScore').textContent = `${viabilityScore}%`;
+            document.getElementById('resultViabilityScore').textContent = `${viabilityScore.toLocaleString('es-ES', { maximumFractionDigits: 0 })}%`;
 
             // --- Observations ---
             let summaryText = `Tu proyecto "${formData.projectName || 'sin nombre'}" opera en el sector de ${formData.sector || 'no especificado'}. `;
             summaryText += `Se enfoca en ${formData.sellType || 'productos/servicios no definidos'} y planea vender ${formData.sellLocation || 'en un lugar no definido'}. `;
-            summaryText += `Tu inversión inicial estimada es de ${totalInitialInvestment.toFixed(2)} € y tus gastos fijos mensuales ascienden a ${totalMonthlyFixedExpenses.toFixed(2)} €. `;
-            summaryText += `La rentabilidad anual estimada es de ${estimatedAnnualProfitability.toFixed(2)} €. `;
+            summaryText += `Tu inversión inicial estimada es de ${totalInitialInvestment.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} € y tus gastos fijos mensuales ascienden a ${totalMonthlyFixedExpenses.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €. `;
+            summaryText += `La rentabilidad anual estimada es de ${estimatedAnnualProfitability.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €. `;
             if (typeof roi === 'number') {
-                summaryText += `El retorno de la inversión (ROI) estimado es del ${roi.toFixed(2)}%.`;
+                summaryText += `El retorno de la inversión (ROI) estimado es del ${roi.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%.`;
             } else {
                 summaryText += `El retorno de la inversión (ROI) no aplica al no haber inversión inicial.`;
             }
+            summaryText += ` El periodo de recuperación de la inversión (Payback) es de ${paybackPeriod}.`; // Added payback to summary
             summaryText += ` Consulta la matriz Riesgo vs. Rentabilidad para una visión visual de tu idea.`;
 
 
@@ -942,10 +1047,10 @@
             breakEvenChartInstance = new Chart(ctxBreakEven, {
                 type: 'bar',
                 data: {
-                    labels: ['Unidades de Equilibrio', 'Unidades Esperadas (Mensual)'],
+                    labels: ['Unidades de Equilibrio (Anual)', 'Unidades Esperadas (Anual)'], // Updated labels
                     datasets: [{
                         label: 'Unidades',
-                        data: [breakEvenUnits, totalUnitsSold], // Use totalUnitsSold for comparison
+                        data: [breakEvenUnits, totalAnnualSalesVolumeUnits], // Changed to totalAnnualSalesVolumeUnits
                         backgroundColor: ['rgba(255, 99, 132, 0.6)', 'rgba(54, 162, 235, 0.6)'],
                         borderColor: ['rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)'],
                         borderWidth: 1
@@ -956,7 +1061,7 @@
                     plugins: {
                         title: {
                             display: true,
-                            text: 'Punto de Equilibrio vs. Ventas Esperadas'
+                            text: 'Punto de Equilibrio Anual vs. Ventas Esperadas Anuales' // Updated title
                         },
                         legend: {
                             display: false
@@ -1057,35 +1162,57 @@
                 }
             });
 
-            // Operating Cost Chart (Cost per Hour/Day)
-            const dailyOperatingCost = totalMonthlyFixedExpenses / (formData.daysPerWeek > 0 ? formData.daysPerWeek * 4 : 1); // Approx 4 weeks per month
-            const costPerHour = formData.hoursPerDay > 0 ? dailyOperatingCost / formData.hoursPerDay : 0;
+            // Operating Cost vs. Revenue Chart (Cost per Day)
+            const totalAnnualOperatingDays = formData.daysPerWeek * 52; // Total annual operating days
+            const dailyOperatingCost = totalAnnualFixedCosts / (totalAnnualOperatingDays || 1); // Avoid division by zero
+
+            // Calculate annual revenue from estimated monthly revenue
+            const totalAnnualRevenue = formData.estimatedTotalRevenue * 12;
+            const dailyRevenue = totalAnnualRevenue / (totalAnnualOperatingDays || 1); // Avoid division by zero
+
 
             const ctxOperatingCost = document.getElementById('operatingCostChart').getContext('2d');
             operatingCostChartInstance = new Chart(ctxOperatingCost, {
                 type: 'bar',
                 data: {
-                    labels: ['Coste Diario Estimado', 'Coste por Hora Estimado'],
-                    datasets: [{
-                        label: 'Coste (€)',
-                        data: [dailyOperatingCost, costPerHour],
-                        backgroundColor: ['rgba(255, 99, 132, 0.6)', 'rgba(54, 162, 235, 0.6)'],
-                        borderColor: ['rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)'],
-                        borderWidth: 1
-                    }]
+                    labels: ['Diario'], // Only daily data
+                    datasets: [
+                        {
+                            label: 'Coste Estimado (€)',
+                            data: [dailyOperatingCost], // Only daily cost
+                            backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Ingreso Estimado (€)',
+                            data: [dailyRevenue], // Only daily revenue
+                            backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 1
+                        }
+                    ]
                 },
                 options: {
                     responsive: true,
                     plugins: {
                         title: {
                             display: true,
-                            text: 'Coste de Operación por Día y Hora'
+                            text: 'Coste vs. Ingreso de Operación por Día' // Updated title
                         },
                         legend: {
-                            display: false
+                            display: true,
+                            position: 'top'
                         }
                     },
                     scales: {
+                        x: {
+                            stacked: false, // Ensure bars are grouped, not stacked
+                            title: {
+                                display: true,
+                                text: 'Período'
+                            }
+                        },
                         y: {
                             beginAtZero: true,
                             title: {
@@ -1125,7 +1252,7 @@
                         tooltip: {
                             callbacks: {
                                 label: function(context) {
-                                    return `Rentabilidad: ${context.parsed.x.toFixed(2)} €, Riesgo: ${context.parsed.y.toFixed(0)}`;
+                                    return `Rentabilidad: ${context.parsed.x.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €, Riesgo: ${context.parsed.y.toFixed(0)}`;
                                 }
                             }
                         }
