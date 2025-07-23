@@ -250,6 +250,7 @@
             opacity: 1;
         }
 
+
         /* Estilos para los nuevos campos de gasto personalizado */
         .custom-expense-item {
             display: flex;
@@ -305,10 +306,10 @@
         }
         .modal-content {
             background-color: #f9fcff;
-            padding: 2rem;
+            padding: 1.5rem; /* Reduced padding */
             border-radius: 1rem;
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
-            max-width: 600px;
+            max-width: 450px; /* Reduced max-width */
             width: 90%;
             position: relative;
             transform: translateY(20px);
@@ -319,8 +320,8 @@
         }
         .modal-close-btn {
             position: absolute;
-            top: 1rem;
-            right: 1rem;
+            top: 0.75rem; /* Adjusted for smaller padding */
+            right: 0.75rem; /* Adjusted for smaller padding */
             background: none;
             border: none;
             font-size: 1.5rem;
@@ -334,11 +335,12 @@
         .modal-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 1.5rem;
+            margin-top: 1rem; /* Reduced margin */
+            font-size: 0.875rem; /* Slightly smaller font for table */
         }
         .modal-table th, .modal-table td {
             border: 1px solid #e2e8f0;
-            padding: 0.75rem;
+            padding: 0.5rem 0.75rem; /* Reduced padding */
             text-align: left;
         }
         .modal-table th {
@@ -490,6 +492,9 @@
                 <!-- Nueva sección para la forma jurídica -->
                 <div class="mb-6 tooltip-container">
                     <label class="block text-gray-700 text-sm font-medium mb-2">¿Cuál será tu forma jurídica inicial?</label>
+                    <p class="text-xs text-gray-500 mb-2">
+                        <span class="font-semibold text-blue-600">Nota:</span> Al seleccionar, algunos gastos habituales en España se rellenarán automáticamente como ejemplo.
+                    </p>
                     <div class="flex flex-wrap gap-3">
                         <button type="button" class="option-button" data-name="legalForm" data-value="autonomo" onclick="selectOption(this, 'legalForm'); updateLegalFormCostsInUI();">Autónomo</button>
                         <button type="button" class="option-button" data-name="legalForm" data-value="sl" onclick="selectOption(this, 'legalForm'); updateLegalFormCostsInUI();">Sociedad Limitada (SL)</button>
@@ -501,12 +506,10 @@
                 <div id="autonomoTypeQuestion" class="mb-6 hidden">
                     <label class="block text-gray-700 text-sm font-medium mb-2">
                         ¿Qué tipo de autónomo serás?
-                        <span class="info-icon-inline tooltip-container">i
-                            <span class="tooltip-text">
-                                **Tarifa Plana:** Nuevo autónomo o no haber sido autónomo en los últimos 2 años (3 si te beneficiaste antes).
-                            </span>
-                        </span>
                     </label>
+                    <p class="text-xs text-gray-500 mb-2">
+                        <strong>Tarifa Plana:</strong> Nuevo autónomo o no haber sido autónomo en los últimos 2 años (3 si te beneficiaste antes).
+                    </p>
                     <div class="flex flex-wrap gap-3">
                         <button type="button" class="option-button" data-name="autonomoType" data-value="tarifa_plana" onclick="selectOption(this, 'autonomoType'); updateLegalFormCostsInUI();">Autónomo (tarifa plana)</button>
                         <button type="button" class="option-button" data-name="autonomoType" data-value="normal" onclick="selectOption(this, 'autonomoType'); updateLegalFormCostsInUI();">Autónomo (normal)</button>
@@ -737,7 +740,7 @@
                         <div class="p-4 bg-blue-50 rounded-lg shadow-sm relative tooltip-container">
                             <p class="text-sm text-gray-600">Rentabilidad Anual Estimada</p>
                             <p id="resultProfitability" class="text-xl font-bold text-blue-700">--</p>
-                            <div class="info-icon" data-tooltip="Beneficio (o pérdida) esperado anualmente después de cubrir costes fijos y variables.">i<span class="tooltip-text">Beneficio (o pérdida) esperado anualmente después de cubrir costes fijos y variables.</span></div>
+                            <div class="info-icon" data-tooltip="Beneficio (o pérdida) esperado anualmente después de cubrir costes fijos y variables.">i<span class="tooltip-text"><strong>Beneficio (o pérdida)</strong> esperado anualmente después de cubrir costes fijos y variables.</span></div>
                         </div>
                         <div class="p-4 bg-green-50 rounded-lg shadow-sm relative tooltip-container">
                             <p class="text-sm text-gray-600">Inversión Inicial Total</p>
@@ -843,52 +846,40 @@
     <div id="legalFormModal" class="modal-overlay">
         <div class="modal-content">
             <button class="modal-close-btn" onclick="closeLegalFormModal()">&times;</button>
-            <h3 class="text-xl font-semibold mb-4 text-gray-800">Costes de Forma Jurídica</h3>
+            <h3 class="text-xl font-semibold mb-4 text-gray-800">Costes de Forma Jurídica (Aproximados en España)</h3>
             <table class="modal-table">
                 <thead>
                     <tr>
                         <th>Concepto</th>
                         <th>Autónomo (nuevo)</th>
                         <th>Autónomo (normal)</th>
-                        <th>Sociedad Limitada (SL)</th>
+                        <th>SL</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>Cuota Seguridad Social</td>
-                        <td>80€/mes (tarifa plana: nuevo autónomo o no haber sido autónomo en los últimos 2 años (3 si te beneficiaste antes))</td>
+                        <td>Cuota S.S.</td>
+                        <td>80€/mes (tarifa plana)</td>
                         <td>Desde 230€/mes</td>
-                        <td>310-400€/mes (autónomo societario)</td>
+                        <td>310-400€/mes (societario)</td>
                     </tr>
                     <tr>
-                        <td>Gestoría / Asesoría</td>
-                        <td>30 - 100€/mes</td>
-                        <td>30 - 100€/mes</td>
-                        <td>100 - 300€/mes</td>
+                        <td>Gestoría</td>
+                        <td>30-100€/mes</td>
+                        <td>30-100€/mes</td>
+                        <td>100-300€/mes</td>
                     </tr>
                     <tr>
-                        <td>Impuestos (IRPF/IVA/IS)</td>
-                        <td>Trimestrales</td>
-                        <td>Trimestrales</td>
-                        <td>Trimestrales / Anuales</td>
-                    </tr>
-                    <tr>
-                        <td>Coste de constitución</td>
+                        <td>Coste Constitución</td>
                         <td>0€</td>
                         <td>0€</td>
-                        <td>300 - 600€ (único pago)</td>
+                        <td>300-600€ (único)</td>
                     </tr>
                     <tr>
-                        <td>Coste adicional por nóminas</td>
-                        <td>Opcional</td>
-                        <td>Opcional</td>
-                        <td>+10-20€/empleado/mes</td>
-                    </tr>
-                    <tr>
-                        <td class="font-bold">TOTAL aproximado mensual</td>
-                        <td class="font-bold">110 - 180€</td>
-                        <td class="font-bold">260 - 330€</td>
-                        <td class="font-bold">410 - 700€</td>
+                        <td class="font-bold">TOTAL Mensual Aprox.</td>
+                        <td class="font-bold">110-180€</td>
+                        <td class="font-bold">260-330€</td>
+                        <td class="font-bold">410-700€</td>
                     </tr>
                 </tbody>
             </table>
@@ -1201,6 +1192,40 @@
                     formData.monthlyExpenses[expenseName] = expenseAmount;
                 }
             });
+
+            // Block 5: Collect product data
+            formData.products = []; // Clear existing products
+            const productEntries = document.querySelectorAll('#productsServicesContainer .product-entry');
+            productEntries.forEach(entry => {
+                const name = entry.querySelector('.product-name').value.trim();
+                const avgPrice = parseFloat(entry.querySelector('.product-avg-price').value) || 0;
+                const variableCost = parseFloat(entry.querySelector('.product-variable-cost').value) || 0;
+                const unitsPerMonth = parseFloat(entry.querySelector('.product-units-per-month').value) || 0;
+
+                // Calculate estimated monthly revenue and unit margin for each product
+                const estimatedMonthlyRevenue = avgPrice * unitsPerMonth;
+                const unitMargin = avgPrice - variableCost;
+
+                if (name && (avgPrice > 0 || unitsPerMonth > 0)) { // Only add if product has a name and some activity
+                    formData.products.push({
+                        name: name,
+                        avgPrice: avgPrice,
+                        variableCost: variableCost,
+                        unitsPerMonth: unitsPerMonth,
+                        estimatedMonthlyRevenue: estimatedMonthlyRevenue,
+                        unitMargin: unitMargin
+                    });
+                }
+            });
+
+
+            // Block 6
+            formData.projectStatus = document.getElementById('projectStatus').value;
+            formData.risks = [];
+            document.querySelectorAll('#risksContainer input[type="checkbox"]:checked').forEach(checkbox => {
+                formData.risks.push(checkbox.value);
+            });
+            // fundingSecured is handled by selectOption
 
             console.log("Collected Form Data:", formData);
         }
